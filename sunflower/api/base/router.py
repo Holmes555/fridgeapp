@@ -51,14 +51,6 @@ urlpatterns = [
 
     path('recipes/<int:recipe_id>/rate', views.RecipeRatingDetail.as_view()),
 
-    path('cookbooks/<int:cookbook_id>/recipes',
-         views.CookBookRecipeList.as_view()),
-    path('cookbooks/<int:cookbook_id>/recipes/<int:recipe_id>',
-         views.CookBookRecipeDetail.as_view()),
-
-    path('cookbooks/', views.CookBookList.as_view()),
-    path('cookbooks/<int:cookbook_id>', views.CookBookDetail.as_view()),
-
     path('fridge/', views.Fridge.as_view()),
 
     path('docs/', schema_view)

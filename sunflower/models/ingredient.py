@@ -5,7 +5,6 @@ from sunflower.models.product import Product
 
 
 class Ingredient(models.Model):
-    author = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
 
     quantity = models.FloatField(default=0)
