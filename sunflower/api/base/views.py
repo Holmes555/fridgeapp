@@ -1,5 +1,6 @@
-from clarifai.rest import Image
-from clarifai.rest import ClarifaiApp
+from io import BytesIO
+
+from clarifai import rest
 
 from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
@@ -25,9 +26,7 @@ from sunflower.services.service.recipe_comment import RecipeCommentService
 from sunflower.services.service.recipe_rating import RecipeRatingService
 from sunflower.services.service.recipe_step import RecipeStepService
 from sunflower.services.service.tag import TagService
-
-
-DATASET = 'food-items-v1.0'
+from sunflower import settings
 
 
 class UserDetail(APIView):
@@ -488,22 +487,36 @@ class CookBookDetail(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class Fridge(APIView):
+class FoodPhoto(APIView):
 
-    def post(self):
-        app = ClarifaiApp(api_key="be355c0550a94e6282fb8adcb83f6a49")
-        model = app.models.get(DATASET)
+    def post(self, *args, **kwargs):
+        app = rest. ClarifaiApp(api_key=settings.CLARIFAI_API_KEY)
+        model = app.models.get(settings.DATASET)
 
-        file = self.request.FILES[0]
-        image = Image(filename=file)
+        files = self.request.FILES
+        print(files)
+        images = []
+        for file in files.values():
+            images.append(rest.Image(file_obj=BytesIO(file.read())))
+            print(images)
 
-        predictions = model.predict([image])
-        concepts = predictions["outputs"][0]["data"]["concepts"]
+        ingredients = []
+        for image in images:
+            predictions = model.predict([image])
+            concepts = predictions["outputs"][0]["data"]["concepts"]
 
-        predictions = []
-        for product in concepts:
-            name, value = concepts["name"], concepts["value"]
-            predictions.append((name, value))
+            for product in concepts:
+                name, value = product["name"], product["value"]
+                if value >= settings.VALUE_PRECISION:
+                    ingredients.append((name, value))
+
+        return Response(data=ingredients, status=status.HTTP_200_OK)
+
+
+
+# class RecipeSuggestion(APIView):
+#
+#     def post(self):
 
 
 
