@@ -1,3 +1,6 @@
+from clarifai.rest import Image
+from clarifai.rest import ClarifaiApp
+
 from rest_framework import generics, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -22,6 +25,9 @@ from sunflower.services.service.recipe_comment import RecipeCommentService
 from sunflower.services.service.recipe_rating import RecipeRatingService
 from sunflower.services.service.recipe_step import RecipeStepService
 from sunflower.services.service.tag import TagService
+
+
+DATASET = 'food-items-v1.0'
 
 
 class UserDetail(APIView):
@@ -480,3 +486,28 @@ class CookBookDetail(APIView):
         user: CustomUser = request.user
         CookBookService.delete(user.pk, cookbook_id)
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class Fridge(APIView):
+
+    def post(self):
+        app = ClarifaiApp(api_key="be355c0550a94e6282fb8adcb83f6a49")
+        model = app.models.get(DATASET)
+
+        file = self.request.FILES[0]
+        image = Image(filename=file)
+
+        predictions = model.predict([image])
+        concepts = predictions["outputs"][0]["data"]["concepts"]
+
+        predictions = []
+        for product in concepts:
+            name, value = concepts["name"], concepts["value"]
+            predictions.append((name, value))
+
+
+
+
+
+
+
