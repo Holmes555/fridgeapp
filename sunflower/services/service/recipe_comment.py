@@ -28,18 +28,8 @@ class RecipeCommentService(metaclass=LogAllMethods):
         return BaseService.get(RecipeComment, recipe_comment_id)
 
     @staticmethod
-    def update(user_id, recipe_comment_id: int, kwargs) -> RecipeComment:
-        return BaseService.update(RecipeComment, user_id, recipe_comment_id,
-                                  kwargs)
-
-    @staticmethod
     def delete(user_id, recipe_comment_id: int):
         return BaseService.delete(RecipeComment, user_id, recipe_comment_id)
-
-    @staticmethod
-    def get_all_by_user_id(user_id: int) -> List[RecipeComment]:
-        BaseService.is_object_exist(CustomUser, user_id)
-        return RecipeCommentQuery.get_all_by_user_id(user_id)
 
     @staticmethod
     def get_all_by_recipe_id(recipe_id: int) -> List[RecipeComment]:

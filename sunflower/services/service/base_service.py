@@ -19,13 +19,6 @@ class BaseService(metaclass=LogAllMethods):
         return False
 
     @staticmethod
-    def is_argument_not_empty(argument: object):
-        if argument:
-            return True
-        raise exceptions.LogicalException(
-            f"Can't manipulate with empty argument {argument}")
-
-    @staticmethod
     def _object_not_found(object_id: int, object_name: str):
         """ Checks if such an object exists in the database. """
         raise exceptions.NotFoundException(object_id, object_name)

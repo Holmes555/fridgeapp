@@ -36,10 +36,6 @@ class IngredientService(metaclass=LogAllMethods):
         return BaseService.get_all(Ingredient)
 
     @staticmethod
-    def delete(user_id: int, ingredient_id: int):
-        return BaseService.delete(Ingredient, user_id, ingredient_id)
-
-    @staticmethod
     def get_by_name(name: str):
         return IngredientQuery.get_by_name(name)
 
@@ -47,13 +43,3 @@ class IngredientService(metaclass=LogAllMethods):
     def get_all_by_recipe_id(recipe_id):
         BaseService.is_object_exist(Recipe, recipe_id)
         return IngredientQuery.get_all_by_recipe_id(recipe_id)
-
-    @staticmethod
-    def update(user_id: int, ingredient_id, kwargs: dict) -> Ingredient:
-
-        if 'product' in kwargs:
-            kwargs_ = {'name': kwargs['product']}
-            product, _ = ProductService.get_or_create(kwargs_)
-            kwargs['product'] = product
-
-        return BaseService.update(Ingredient, user_id, ingredient_id, kwargs)
